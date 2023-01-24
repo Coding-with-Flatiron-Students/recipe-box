@@ -1,18 +1,14 @@
 import React from "react";
-import RecipeCard from "./RecipeCard";
+import RecipeCardBehavior from "./RecipeCardBehavior";
+
+
 
 function RecipeBox({ 
     recipeData, 
     search, 
     categorySelect, 
     onDeleteFromBox,
-    setTitle,
-    setImgLink,
-    setRecipeLink,
-    setEffort,
-    setMeal,
-    setStatus,
-    setNotes
+    
  }){
 
 
@@ -24,24 +20,10 @@ function RecipeBox({
         }})
     .filter(result=>result.name.toLowerCase().includes(search.toLowerCase()))
     .map(recipe=>{
-        return <RecipeCard 
+        return <RecipeCardBehavior
                     key={recipe.id} 
-                    id={recipe.id} 
-                    name={recipe.name} 
-                    meal={recipe.meal} 
-                    image={recipe.image} 
-                    notes={recipe.notes} 
-                    status={recipe.status} 
-                    effort={recipe.effort}
-                    link={recipe.link}
-                    onDeleteFromBox={onDeleteFromBox}
-                    setTitle={setTitle}
-                    setImgLink={setImgLink}
-                    setRecipeLink={setRecipeLink}
-                    setEffort={setEffort}
-                    setMeal={setMeal}
-                    setStatus={setStatus}
-                    setNotes={setNotes}
+                    recipe={recipe}
+                    recipesUpdate={onDeleteFromBox}
                 />
     })
 

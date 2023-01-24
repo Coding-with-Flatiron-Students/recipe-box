@@ -1,29 +1,37 @@
-import React from "react";
-import Recipe from "./Recipe";
-import RecipeCard from "./RecipeCard";
+import React, {useState} from "react";
+import Challenge1 from "./Challenge1";
+import RecipeCardBehavior from "./RecipeCardBehavior";
 
-function RecipeContainer({ apiRecipes, search, onAddRecipeClick, effortAmount }){
+function RecipeContainer({ apiRecipes, search, onAddRecipeClick}){
 
-    const base=apiRecipes.baseUri
+    const [timeFilter, setTimeFilter] = useState("")
+    const [showTime, setShowTime] = useState(false)
+    const base = apiRecipes.baseUri
 
-    const recipesToDisplay=apiRecipes.results.filter(result=>result.title.toLowerCase().includes(search.toLowerCase()))
-    .map(recipe=>{
-        return <Recipe 
+    function handleFilter(){
+        setShowTime(true)
+    }
+
+    const timeFiltered = apiRecipes.results.filter(result => result.readyInMinutes <= parseInt(timeFilter))
+    const categoryFiltered = apiRecipes.results.filter(result => result.title.toLowerCase().includes(search.toLowerCase()))
+    
+    const recipesToDisplay = showTime ? timeFiltered : categoryFiltered
+
+   
+   const returnRecipes =  recipesToDisplay.map(recipe => {
+        return <RecipeCardBehavior
                     key={recipe.id} 
-                    id={recipe.id} 
-                    name={recipe.title} 
-                    image={base + recipe.image} 
-                    effort={recipe.readyInMinutes}
-                    link={recipe.sourceUrl}
-                    onAddRecipeClick={onAddRecipeClick}
-                    effortAmount={effortAmount}
+                    recipe={recipe}
+                    recipesUpdate={onAddRecipeClick}
                 />
     })
 
 
+
     return(
         <div id="recipe-container" className="container">
-            {recipesToDisplay}
+            <Challenge1 timeFilter={timeFilter} setTimeFilter={setTimeFilter} handleFilter={handleFilter}/>
+            {returnRecipes}
         </div>
     )
 }

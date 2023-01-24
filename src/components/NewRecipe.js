@@ -1,38 +1,28 @@
-import React from "react";
+import React, {useState} from "react";
 
-function NewRecipe({ 
-        onNewRecipeSubmit,
-        title,
-        setTitle,
-        effort,
-        setEffort,
-        imgLink,
-        setImgLink,
-        notes,
-        setSearch,
-        setNotes,
-        status,
-        setStatus,
-        meal,
-        setMeal,
-        recipeLink,
-        setRecipeLink
-     }){
+function NewRecipe({ onNewRecipeSubmit}){
+    
+    const [newRecipe, setNewRecipe] = useState({
+        name: "",
+        image: "",
+        status: "--Select Status of Recipe--",
+        effort: "--Select Effort Level--",
+        meal: "--Select Effort Level--",
+        notes: "",
+        link: "",
+    })
+    
+    const [title, image, status, effort, meal, notes, link] = newRecipe
 
+
+        function handleChange(e){
+            setNewRecipe({...newRecipe, 
+            [e.target.name]: e.target.value})
+        }
 
     function handleFormSubmit(e){
         e.preventDefault();
-        const newRecipe={
-            name: title,
-            image: imgLink,
-            status: status.toLowerCase(),
-            effort: parseInt(effort),
-            meal: meal.toLowerCase(),
-            notes:[
-                notes
-            ],
-            link: recipeLink,
-        };
+        
         fetch("http://localhost:3000/recipes",{
             method: "POST",
             headers:{
@@ -41,16 +31,17 @@ function NewRecipe({
             body: JSON.stringify(newRecipe)
         })
         .then(res=>res.json())
-        .then(data=>onNewRecipeSubmit(data))
-        console.log(newRecipe)
-        setTitle("")
-        setImgLink("")
-        setRecipeLink("")
-        setEffort("--Select an Option--")
-        setMeal("--Select an Option--")
-        setStatus("--Select an Option--")
-        setNotes("")
-        setSearch("")
+        .then(postedRecipe =>onNewRecipeSubmit(postedRecipe))
+        
+       setNewRecipe({
+        name: "",
+        image: "",
+        status: "--Select Status of Recipe--",
+        effort: "--Select Effort Level--",
+        meal: "--Select Effort Level--",
+        notes: "",
+        link: "",
+    })
     }
 
 
@@ -59,24 +50,25 @@ function NewRecipe({
         <div id ="add-new-recipe" className="add-new-recipe">
             <h2>ADD NEW RECIPE</h2>
             <form onSubmit={handleFormSubmit}>
+                
                 <label>
                     {/* Title: */}
-                    <input value={title} onChange={e=>setTitle(e.target.value)} type="text" name="title" placeholder="Title" className="text-input"/>
+                    <input value={title} onChange={handleChange} type="text" name="title" placeholder="Title" className="text-input"/>
                 </label>
                 <br></br>
                 <label>
                     {/* Link to Image: */}
-                    <input placeholder="Link to Image" value={imgLink} onChange={e=>setImgLink(e.target.value)} type="text" name="image" className="text-input"/>
+                    <input placeholder="Link to Image" value={image} onChange={handleChange} type="text" name="image" className="text-input"/>
                 </label>
                 <br></br>
                 <label>
                     {/* Link to Full Recipe: */}
-                    <input placeholder="Link to Full Recipe" value={recipeLink} onChange={e=>setRecipeLink(e.target.value)} type="text" name="link" className="text-input"/>
+                    <input placeholder="Link to Full Recipe" value={link} onChange={handleChange} type="text" name="link" className="text-input"/>
                 </label>
                 <br></br>
                 <label>
                     {/* Effort : */}
-                    <select value ={effort} onChange={e=>setEffort(e.target.value)} name="effort" className="dropdown">
+                    <select value ={effort} onChange={handleChange} name="effort" className="dropdown">
                         <option disabled>--Select Effort Level--</option>
                         <option>1</option>
                         <option>2</option>
@@ -88,7 +80,7 @@ function NewRecipe({
                 <br></br>
                 <label>
                     {/* Meal : */}
-                    <select value ={meal} onChange={e=>setMeal(e.target.value)} name="Meal" className="dropdown">
+                    <select value ={meal} onChange={handleChange} name="Meal" className="dropdown">
                         <option disabled>--Select Meal--</option>
                         <option>Breakfast</option>
                         <option>Lunch</option>
@@ -100,7 +92,7 @@ function NewRecipe({
                 <br></br>
                 <label>
                     {/* Status : */}
-                    <select value={status} onChange={e=>setStatus(e.target.value)} name="status" className="dropdown">
+                    <select value={status} onChange={handleChange} name="status" className="dropdown">
                         <option disabled>--Select Status of Recipe--</option>
                         <option>Repeat</option>
                         <option>Need to try it</option>
@@ -110,7 +102,7 @@ function NewRecipe({
                 <br></br>
                 <label>
                     {/* Notes: (optional) */}
-                    <input placeholder= "Notes (optional)" value={notes} onChange={e=>setNotes(e.target.value)} type="text" name="notes" className="text-input"/>
+                    <input placeholder= "Notes (optional)" value={notes} onChange={handleChange} type="text" name="notes" className="text-input"/>
                 </label>
                 <br></br>
                 <input type="submit" value="Submit" id="new-submit-btn"/>
